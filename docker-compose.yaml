@@ -7,7 +7,7 @@ services:
     volumes:
       - ./config/php_upload.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./config/php_opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
-      - ${DATA_PATH}/wp-app:/var/www/html
+      - ${DATA_PATH:-.}/wp-app:/var/www/html
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: ${DB_NAME}
@@ -33,7 +33,7 @@ services:
     container_name: wp_cli
     volumes:
       - ./scripts/wpcli_init.sh:/usr/local/bin/wpcli_init.sh
-      - ${DATA_PATH}/wp-app:/var/www/html
+      - ${DATA_PATH:-.}/wp-app:/var/www/html
     entrypoint: ["/bin/sh", "/usr/local/bin/wpcli_init.sh"]
     environment:
       WORDPRESS_DB_HOST: db
@@ -58,8 +58,8 @@ services:
     ]
     volumes:
       - ./config/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf
-      - ${DATA_PATH}/backup:/docker-entrypoint-initdb.d
-      - ${DATA_PATH}/mariadb:/var/lib/mysql
+      - ${DATA_PATH:-.}/backup:/docker-entrypoint-initdb.d
+      - ${DATA_PATH:-.}/mariadb:/var/lib/mysql
     environment:
       TZ: Asia/Shanghai
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -74,7 +74,7 @@ services:
     image: nginx:alpine
     container_name: wp_nginx
     ports:
-      - ${PORT-:8080}:80
+      - ${PORT:-8080}:80
     volumes:
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
       - ${DATA_PATH}/wp-app:/var/www/html:ro
@@ -90,7 +90,7 @@ services:
     container_name: wp_redis
     volumes:
       - ./config/redis.conf:/usr/local/etc/redis/redis.conf
-      - ${DATA_PATH}/redis:/data
+      - ${DATA_PATH:-.}/redis:/data
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     networks:
       wordpress_network:
