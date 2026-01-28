@@ -1,5 +1,3 @@
-version: '3.3'
-
 services:
   wp:
     image: wordpress:php8.5-fpm-alpine
